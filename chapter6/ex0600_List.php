@@ -3,7 +3,19 @@ echo "chapter06_filelist <br>";
 echo "PHP Arrays <br><br>";
 
 
-$dir    = 'C:\Apache24\htdocs\php\chapter6';
+$ua = $_SERVER['HTTP_USER_AGENT'];
+echo $ua."<br>";
+$mac = strpos($ua, 'Macintosh') ? true : false;
+if ($ua) {
+  if($mac){
+    $dir = '/Applications/mampstack-5.6.30-1/apache2/htdocs/php/chapter6';
+  }
+  else{
+    $dir    = 'C:\Apache24\htdocs\php\chapter6';
+  }
+}
+
+
 //$dir2 = 'localhost/';
 
 echo $dir."<br>";
