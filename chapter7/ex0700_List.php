@@ -4,7 +4,7 @@ echo "Practical PHP <br><br>";
 
 
 $ua = $_SERVER['HTTP_USER_AGENT'];
-echo $ua."<br>";
+echo "OS name=".$ua."<br>";
 $mac = strpos($ua, 'Macintosh') ? true : false;
 if ($ua) {
   if($mac){
@@ -18,7 +18,7 @@ if ($ua) {
 
 //$dir2 = 'localhost/';
 
-echo $dir."<br>";
+echo "path=".$dir."<br>";
 
 $files1 = scandir($dir);
 // print_r($files1);
