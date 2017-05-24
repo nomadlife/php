@@ -11,7 +11,7 @@ if ($ua) {
     $dir = '/Applications/mampstack-5.6.30-1/apache2/htdocs/php/chapter10';
   }
   else{
-    $dir    = 'C:\Apache24\htdocs\php2\chapter10';
+    $dir    = 'C:\Bitnami\wampstack-5.6.30-2\apache2\htdocs\php\chapter10';
   }
 }
 

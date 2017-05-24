@@ -1,14 +1,430 @@
+CREATE DATABASE publications;
+
+USE publications;
+
+GRANT PRIVILEGES ON database.object TO 'username'@'hostname'
+IDENTIFIED BY 'password';
+
+
+
+
 Example 8-6. Adding the auto-incrementing id column at table creation
 
->CREATE TABLE classics (
+CREATE TABLE classics (
 author VARCHAR(128),
 title VARCHAR(128),
 type VARCHAR(16),
 year CHAR(4),
 id INT UNSIGNED NOT NULL AUTO_INCREMENT KEY) ENGINE MyISAM;
 
-Check,
->DESCRIBE classics;
+mysql> show tables;
++------------------------+
+| Tables_in_publications |
++------------------------+
+| classics               |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql> describe classics;
++--------+------------------+------+-----+---------+----------------+
+| Field  | Type             | Null | Key | Default | Extra          |
++--------+------------------+------+-----+---------+----------------+
+| author | varchar(128)     | YES  |     | NULL    |                |
+| title  | varchar(128)     | YES  |     | NULL    |                |
+| type   | varchar(16)      | YES  |     | NULL    |                |
+| year   | char(4)          | YES  |     | NULL    |                |
+| id     | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
++--------+------------------+------+-----+---------+----------------+
+5 rows in set (0.02 sec)
+
 
 Example 8-7. Removing the id column
-ALTER TABLE classics DROP id;
+mysql>ALTER TABLE classics DROP id;
+mysql>describe classics;
++--------+--------------+------+-----+---------+-------+
+| Field  | Type         | Null | Key | Default | Extra |
++--------+--------------+------+-----+---------+-------+
+| author | varchar(128) | YES  |     | NULL    |       |
+| title  | varchar(128) | YES  |     | NULL    |       |
+| type   | varchar(16)  | YES  |     | NULL    |       |
+| year   | char(4)      | YES  |     | NULL    |       |
++--------+--------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+
+Adding data to a table
+Example 8-8. Populating the classics table
+mysql>
+INSERT INTO classics(author, title, type, year)
+VALUES('Mark Twain','The Adventures of Tom Sawyer','Fiction','1876');
+INSERT INTO classics(author, title, type, year)
+VALUES('Jane Austen','Pride and Prejudice','Fiction','1811');
+INSERT INTO classics(author, title, type, year)
+VALUES('Charles Darwin','The Origin of Species','Non-Fiction','1856');
+INSERT INTO classics(author, title, type, year)
+VALUES('Charles Dickens','The Old Curiosity Shop','Fiction','1841');
+INSERT INTO classics(author, title, type, year)
+VALUES('William Shakespeare','Romeo and Juliet','Play','1594');
+
+mysql> select * from classics;
++---------------------+------------------------------+-------------+------+
+| author              | title                        | type        | year |
++---------------------+------------------------------+-------------+------+
+| Mark Twain          | The Adventures of Tom Sawyer | Fiction     | 1876 |
+| Jane Austen         | Pride and Prejudice          | Fiction     | 1811 |
+| Charles Darwin      | The Origin of Species        | Non-Fiction | 1856 |
+| Charles Dickens     | The Old Curiosity Shop       | Fiction     | 1841 |
+| William Shakespeare | Romeo and Juliet             | Play        | 1594 |
++---------------------+------------------------------+-------------+------+
+5 rows in set (0.00 sec)
+
+-Changing the data type of a column
+
+mysql> ALTER TABLE classics MODIFY year SMALLINT;
+Query OK, 5 rows affected (0.10 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> describe classics;
++--------+--------------+------+-----+---------+-------+
+| Field  | Type         | Null | Key | Default | Extra |
++--------+--------------+------+-----+---------+-------+
+| author | varchar(128) | YES  |     | NULL    |       |
+| title  | varchar(128) | YES  |     | NULL    |       |
+| type   | varchar(16)  | YES  |     | NULL    |       |
+| year   | smallint(6)  | YES  |     | NULL    |       |
++--------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+-Adding a new column
+
+mysql> ALTER TABLE classics ADD pages SMALLINT UNSIGNED;
+Query OK, 5 rows affected (0.08 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> describe classics;
++--------+----------------------+------+-----+---------+-------+
+| Field  | Type                 | Null | Key | Default | Extra |
++--------+----------------------+------+-----+---------+-------+
+| author | varchar(128)         | YES  |     | NULL    |       |
+| title  | varchar(128)         | YES  |     | NULL    |       |
+| type   | varchar(16)          | YES  |     | NULL    |       |
+| year   | smallint(6)          | YES  |     | NULL    |       |
+| pages  | smallint(5) unsigned | YES  |     | NULL    |       |
++--------+----------------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+
+-Renaming a column
+
+mysql> ALTER TABLE classics CHANGE type category VARCHAR(16);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> describe classics;
++----------+----------------------+------+-----+---------+-------+
+| Field    | Type                 | Null | Key | Default | Extra |
++----------+----------------------+------+-----+---------+-------+
+| author   | varchar(128)         | YES  |     | NULL    |       |
+| title    | varchar(128)         | YES  |     | NULL    |       |
+| category | varchar(16)          | YES  |     | NULL    |       |
+| year     | smallint(6)          | YES  |     | NULL    |       |
+| pages    | smallint(5) unsigned | YES  |     | NULL    |       |
++----------+----------------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+
+-Removing a column
+
+mysql> ALTER TABLE classics DROP pages;
+Query OK, 5 rows affected (0.05 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> describe classics;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| author   | varchar(128) | YES  |     | NULL    |       |
+| title    | varchar(128) | YES  |     | NULL    |       |
+| category | varchar(16)  | YES  |     | NULL    |       |
+| year     | smallint(6)  | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+-Creating an Index
+Example 8-10. Adding indexes to the classics table
+ALTER TABLE classics ADD INDEX(author(20));
+ALTER TABLE classics ADD INDEX(title(20));
+ALTER TABLE classics ADD INDEX(category(4));
+ALTER TABLE classics ADD INDEX(year);
+DESCRIBE classics;
+
+mysql> DESCRIBE classics;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| author   | varchar(128) | YES  | MUL | NULL    |       |
+| title    | varchar(128) | YES  | MUL | NULL    |       |
+| category | varchar(16)  | YES  | MUL | NULL    |       |
+| year     | smallint(6)  | YES  | MUL | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+Example 8-11. These two commands are equivalent
+ALTER TABLE classics ADD INDEX(author(20));
+CREATE INDEX author ON classics (author(20));
+
+
+RENAME TABLE classics TO classics1;
+DESCRIBE disposable;
+DROP TABLE disposable;
+SHOW tables;
+
+TEST2---------------------------------------------------------
+
+Example 8-12. Creating the table classics with indexes
+CREATE TABLE classics (
+author VARCHAR(128),
+title VARCHAR(128),
+category VARCHAR(16),
+year SMALLINT,
+INDEX(author(20)),
+INDEX(title(20)),
+INDEX(category(4)),
+INDEX(year)) ENGINE MyISAM;
+
+
+-Primary keys
+ALTER TABLE classics ADD isbn CHAR(13) PRIMARY KEY;
+ -> error, because new isbn column is empty, 
+     so do down script first, and then make primary key.
+
+ALTER TABLE classics ADD isbn CHAR(13);
+DESCRIBE classics;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| author   | varchar(128) | YES  | MUL | NULL    |       |
+| title    | varchar(128) | YES  | MUL | NULL    |       |
+| category | varchar(16)  | YES  | MUL | NULL    |       |
+| year     | smallint(6)  | YES  | MUL | NULL    |       |
+| isbn     | char(13)     | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+UPDATE classics SET isbn='9781598184891' WHERE year='1876';
+UPDATE classics SET isbn='9780582506206' WHERE year='1811';
+UPDATE classics SET isbn='9780517123201' WHERE year='1856';
+UPDATE classics SET isbn='9780099533474' WHERE year='1841';
+UPDATE classics SET isbn='9780192814968' WHERE year='1594';
+DESCRIBE classics;
++---------------------+------------------------------+-------------+------+---------------+
+| author              | title                        | category    | year | isbn          |
++---------------------+------------------------------+-------------+------+---------------+
+| Mark Twain          | The Adventures of Tom Sawyer | Fiction     | 1876 | 9781598184891 |
+| Jane Austen         | Pride and Prejudice          | Fiction     | 1811 | 9780582506206 |
+| Charles Darwin      | The Origin of Species        | Non-Fiction | 1856 | 9780517123201 |
+| Charles Dickens     | The Old Curiosity Shop       | Fiction     | 1841 | 9780099533474 |
+| William Shakespeare | Romeo and Juliet             | Play        | 1594 | 9780192814968 |
++---------------------+------------------------------+-------------+------+---------------+
+ALTER TABLE classics ADD PRIMARY KEY(isbn);
+DESCRIBE classics;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| author   | varchar(128) | YES  | MUL | NULL    |       |
+| title    | varchar(128) | YES  | MUL | NULL    |       |
+| category | varchar(16)  | YES  | MUL | NULL    |       |
+| year     | smallint(6)  | YES  | MUL | NULL    |       |
+| isbn     | char(13)     | NO   | PRI |         |       |
++----------+--------------+------+-----+---------+-------+
+DESCRIBE classics;
+
+
+
+
+TEST 3 -----------------------------------------------------
+
+Example 8-14. Creating the table classics with a primary key
+
+CREATE TABLE classics (
+author VARCHAR(128),
+title VARCHAR(128),
+category VARCHAR(16),
+year SMALLINT,
+isbn CHAR(13),
+INDEX(author(20)),
+INDEX(title(20)),
+INDEX(category(4)),
+INDEX(year),
+PRIMARY KEY (isbn)) ENGINE MyISAM;
+
+
+
+
+
+-Creating a FULLTEXT index
+
+Example 8-15. Adding a FULLTEXT index to the table classics
+ALTER TABLE classics ADD FULLTEXT(author,title);
+
+
+======================================================
+
+select
+
+Example 8-16. Two different SELECT statements
+SELECT author,title FROM classics;
++---------------------+------------------------------+
+| author              | title                        |
++---------------------+------------------------------+
+| Mark Twain          | The Adventures of Tom Sawyer |
+| Jane Austen         | Pride and Prejudice          |
+| Charles Darwin      | The Origin of Species        |
+| Charles Dickens     | The Old Curiosity Shop       |
+| William Shakespeare | Romeo and Juliet             |
++---------------------+------------------------------+
+SELECT title,isbn FROM classics;
++------------------------------+---------------+
+| title                        | isbn          |
++------------------------------+---------------+
+| The Adventures of Tom Sawyer | 9781598184891 |
+| Pride and Prejudice          | 9780582506206 |
+| The Origin of Species        | 9780517123201 |
+| The Old Curiosity Shop       | 9780099533474 |
+| Romeo and Juliet             | 9780192814968 |
++------------------------------+---------------+
+
+
+Example 8-17. Counting rows
+SELECT COUNT(*) FROM classics;
++----------+
+| count(*) |
++----------+
+|        5 |
++----------+
+
+SELECT DISTINCT
+Example 8-18. Duplicating data
+INSERT INTO classics(author, title, category, year, isbn)
+VALUES('Charles Dickens','Little Dorrit','Fiction','1857', '9780141439969');
++---------------------+------------------------------+-------------+------+---------------+
+| author              | title                        | category    | year | isbn          |
++---------------------+------------------------------+-------------+------+---------------+
+| Mark Twain          | The Adventures of Tom Sawyer | Fiction     | 1876 | 9781598184891 |
+| Jane Austen         | Pride and Prejudice          | Fiction     | 1811 | 9780582506206 |
+| Charles Darwin      | The Origin of Species        | Non-Fiction | 1856 | 9780517123201 |
+| Charles Dickens     | The Old Curiosity Shop       | Fiction     | 1841 | 9780099533474 |
+| William Shakespeare | Romeo and Juliet             | Play        | 1594 | 9780192814968 |
+| Charles Dickens     | Little Dorrit                | Fiction     | 1857 | 9780141439969 |
++---------------------+------------------------------+-------------+------+---------------+
+
+Example 8-19. With and without the DISTINCT qualifier
+SELECT author FROM classics;
++---------------------+
+| author              |
++---------------------+
+| Mark Twain          |
+| Jane Austen         |
+| Charles Darwin      |
+| Charles Dickens     |
+| William Shakespeare |
+| Charles Dickens     |
++---------------------+
+SELECT DISTINCT author FROM classics;
++---------------------+
+| author              |
++---------------------+
+| Mark Twain          |
+| Jane Austen         |
+| Charles Darwin      |
+| Charles Dickens     |
+| William Shakespeare |
++---------------------+
+
+-DELETE
+Example 8-20. Removing the new entry
+DELETE FROM classics WHERE title='Little Dorrit';
++---------------------+------------------------------+-------------+------+---------------+
+| author              | title                        | category    | year | isbn          |
++---------------------+------------------------------+-------------+------+---------------+
+| Mark Twain          | The Adventures of Tom Sawyer | Fiction     | 1876 | 9781598184891 |
+| Jane Austen         | Pride and Prejudice          | Fiction     | 1811 | 9780582506206 |
+| Charles Darwin      | The Origin of Species        | Non-Fiction | 1856 | 9780517123201 |
+| Charles Dickens     | The Old Curiosity Shop       | Fiction     | 1841 | 9780099533474 |
+| William Shakespeare | Romeo and Juliet             | Play        | 1594 | 9780192814968 |
++---------------------+------------------------------+-------------+------+---------------+
+
+WHERE (clause, which is the heart and soul of SQL)
+
+Example 8-21. Using the WHERE keyword
+SELECT author,title FROM classics WHERE author="Mark Twain";
++------------+------------------------------+
+| author     | title                        |
++------------+------------------------------+
+| Mark Twain | The Adventures of Tom Sawyer |
++------------+------------------------------+
+SELECT author,title FROM classics WHERE isbn="9781598184891 ";
++------------+------------------------------+
+| author     | title                        |
++------------+------------------------------+
+| Mark Twain | The Adventures of Tom Sawyer |
++------------+------------------------------+
+
+Example 8-22. Using the LIKE qualifier
+SELECT author,title FROM classics WHERE author LIKE "Charles%";
++-----------------+------------------------+
+| author          | title                  |
++-----------------+------------------------+
+| Charles Darwin  | The Origin of Species  |
+| Charles Dickens | The Old Curiosity Shop |
++-----------------+------------------------+
+SELECT author,title FROM classics WHERE title LIKE "%Species";
++----------------+-----------------------+
+| author         | title                 |
++----------------+-----------------------+
+| Charles Darwin | The Origin of Species |
++----------------+-----------------------+
+SELECT author,title FROM classics WHERE title LIKE "%and%";
++---------------------+---------------------+
+| author              | title               |
++---------------------+---------------------+
+| Jane Austen         | Pride and Prejudice |
+| William Shakespeare | Romeo and Juliet    |
++---------------------+---------------------+
+
+
+Example 8-23. Limiting the number of results returned
+SELECT author,title FROM classics LIMIT 3;
++----------------+------------------------------+
+| author         | title                        |
++----------------+------------------------------+
+| Mark Twain     | The Adventures of Tom Sawyer |
+| Jane Austen    | Pride and Prejudice          |
+| Charles Darwin | The Origin of Species        |
++----------------+------------------------------+
+SELECT author,title FROM classics LIMIT 1,2;
+SELECT author,title FROM classics LIMIT 3,1;
+
+MATCH ... AGAINST
+Example 8-24. Using MATCH ... AGAINST on FULLTEXT indexes
+
+SELECT author,title FROM classics
+WHERE MATCH(author,title) AGAINST('and');
+Empty set (0.00 sec)
+  --> it's because 'and' keyword is "stopword", so MySQL ignore it.
+  
+SELECT author,title FROM classics
+WHERE MATCH(author,title) AGAINST('old shop');
++-----------------+------------------------+
+| author          | title                  |
++-----------------+------------------------+
+| Charles Dickens | The Old Curiosity Shop |
++-----------------+------------------------+
+
+SELECT author,title FROM classics
+WHERE MATCH(author,title) AGAINST('tom sawyer');
++------------+------------------------------+
+| author     | title                        |
++------------+------------------------------+
+| Mark Twain | The Adventures of Tom Sawyer |
++------------+------------------------------+
+
+MATCH ... AGAINST ... IN BOOLEAN MODE
