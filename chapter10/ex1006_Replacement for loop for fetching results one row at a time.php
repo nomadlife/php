@@ -1,6 +1,6 @@
 <?php // query.php
-echo "ex1005<br>";
-echo "Fetching results one cell at a time <br><br>";
+echo "ex1006<br>";
+echo "Replacement for loop for fetching results one row at a time <br><br>";
 
 require_once 'ex1001_The login file.php';
 $db_server = mysqli_connect($db_hostname, $db_username, $db_password);
@@ -17,12 +17,12 @@ $rows = mysqli_num_rows($result);
 
 for ($j = 0 ; $j < $rows ; ++$j)
 {
-	$row = mysqli_fetch_assoc($result);
-	echo 'Author: ' . ($row['author']) . '<br>';
-	echo 'Title: ' . ($row['title']) . '<br>';
-	echo 'Category: ' . ($row['category']) . '<br>';
-	echo 'Year: ' . ($row['year']) . '<br>';
-	echo 'ISBN: ' . ($row['isbn']) . '<br><br>';
+	$row = mysqli_fetch_row($result);
+	echo 'Author: ' . $row[0] . '<br>';
+	echo 'Title: ' . $row[1] . '<br>';
+	echo 'Category: ' . $row[2] . '<br>';
+	echo 'Year: ' . $row[3] . '<br>';
+	echo 'ISBN: ' . $row[4] . '<br><br>';
 
 	/*
 	echo 'Author: ' . mysql_result($rows,$j,'author') . '<br>';
@@ -32,4 +32,5 @@ for ($j = 0 ; $j < $rows ; ++$j)
 	echo 'ISBN: ' . mysql_result($rows,$j,'isbn') . '<br><br>';
 	*/
 }
+mysqli_close($db_server);
 ?>

@@ -428,3 +428,78 @@ WHERE MATCH(author,title) AGAINST('tom sawyer');
 +------------+------------------------------+
 
 MATCH ... AGAINST ... IN BOOLEAN MODE
+
+
+Joining Tables Together
+Example 8-28. Creating and populating the customers table
+CREATE TABLE customers (
+name VARCHAR(128),
+isbn VARCHAR(13),
+PRIMARY KEY (isbn)) ENGINE MyISAM;
++------------------------+
+| Tables_in_publications |
++------------------------+
+| classics               |
+| classics2              |
+| classics3              |
+| customers              |
++------------------------+
+INSERT INTO customers(name,isbn)
+VALUES('Joe Bloggs','9780099533474');
+INSERT INTO customers(name,isbn)
+VALUES('Mary Smith','9780582506206');
+INSERT INTO customers(name,isbn)
+VALUES('Jack Wilson','9780517123201');
+SELECT * FROM customers;
++-------------+---------------+
+| name        | isbn          |
++-------------+---------------+
+| Joe Bloggs  | 9780099533474 |
+| Mary Smith  | 9780582506206 |
+| Jack Wilson | 9780517123201 |
++-------------+---------------+
+
+Example 8-29. Joining two tables into a single SELECT
+SELECT name,author,title from customers,classics
+WHERE customers.isbn=classics.isbn;
++-------------+-----------------+------------------------+
+| name        | author          | title                  |
++-------------+-----------------+------------------------+
+| Joe Bloggs  | Charles Dickens | The Old Curiosity Shop |
+| Mary Smith  | Jane Austen     | Pride and Prejudice    |
+| Jack Wilson | Charles Darwin  | The Origin of Species  |
++-------------+-----------------+------------------------+
+
+NATURAL JOIN
+SELECT name,author,title FROM customers NATURAL JOIN classics;
++-------------+-----------------+------------------------+
+| name        | author          | title                  |
++-------------+-----------------+------------------------+
+| Joe Bloggs  | Charles Dickens | The Old Curiosity Shop |
+| Mary Smith  | Jane Austen     | Pride and Prejudice    |
+| Jack Wilson | Charles Darwin  | The Origin of Species  |
++-------------+-----------------+------------------------+
+JOIN...ON
+SELECT name,author,title FROM customers
+JOIN classics ON customers.isbn=classics.isbn;
++-------------+-----------------+------------------------+
+| name        | author          | title                  |
++-------------+-----------------+------------------------+
+| Joe Bloggs  | Charles Dickens | The Old Curiosity Shop |
+| Mary Smith  | Jane Austen     | Pride and Prejudice    |
+| Jack Wilson | Charles Darwin  | The Origin of Species  |
++-------------+-----------------+------------------------+
+Using AS
+SELECT name,author,title from
+customers AS cust, classics AS class
+WHERE cust.isbn=class.isbn;
++-------------+-----------------+------------------------+
+| name        | author          | title                  |
++-------------+-----------------+------------------------+
+| Joe Bloggs  | Charles Dickens | The Old Curiosity Shop |
+| Mary Smith  | Jane Austen     | Pride and Prejudice    |
+| Jack Wilson | Charles Darwin  | The Origin of Species  |
++-------------+-----------------+------------------------+
+
+
+
