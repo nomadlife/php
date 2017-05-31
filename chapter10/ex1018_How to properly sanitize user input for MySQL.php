@@ -1,7 +1,6 @@
 <?php
 echo "ex1018<br>";
 echo "How to properly sanitize user input for MySQL <br><br>";
-echo "How to properly sanitize user input for MySQL_2 <br><br>";
 
 function mysql_fix_string($string)
 {
